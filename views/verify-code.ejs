@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/style.css" />
+    <title>Xác nhận mã</title>
+  </head>
+  <body>
+    <section>
+      <!-- Hiệu ứng lá rơi -->
+      <div class="leaves">
+        <div class="set">
+          <div><img src="/images/leaf_01.png" /></div>
+          <div><img src="/images/leaf_02.png" /></div>
+          <div><img src="/images/leaf_03.png" /></div>
+          <div><img src="/images/leaf_04.png" /></div>
+          <div><img src="/images/leaf_01.png" /></div>
+          <div><img src="/images/leaf_02.png" /></div>
+          <div><img src="/images/leaf_03.png" /></div>
+          <div><img src="/images/leaf_04.png" /></div>
+        </div>
+      </div>
+      <!-- Ảnh nền -->
+      <img src="/images/bg.jpg" class="bg" />
+      <!-- Ảnh cô gái -->
+      <img src="/images/girl.png" class="girl" />
+      <!-- Ảnh cây -->
+      <img src="/images/trees.png" class="trees" />
+      <!-- Form xác nhận mã -->
+      <div class="login">
+        <h2>Xác nhận mã</h2>
+        <p
+          style="
+            color: #666;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+          "
+        >
+          Vui lòng nhập mã 6 số đã được gửi đến email của bạn
+        </p>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+        <div
+          style="
+            background: #fee;
+            color: #c33;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+          "
+        >
+          <%= error %>
+        </div>
+        <% } %>
+
+        <form action="/verify-code" method="POST">
+          <input type="hidden" name="token" value="<%= token %>" />
+          <div class="inputBox">
+            <input
+              type="text"
+              name="code"
+              placeholder="Nhập mã 6 số"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              style="
+                text-align: center;
+                letter-spacing: 8px;
+                font-size: 24px;
+                font-weight: bold;
+              "
+              required
+            />
+          </div>
+          <div class="inputBox">
+            <input type="submit" value="Xác nhận" id="btn" />
+          </div>
+        </form>
+        <div class="group">
+          <a href="/forgot-password">Quay lại</a>
+          <a href="/login">Đăng nhập</a>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // Auto focus vào input code
+      document.querySelector('input[name="code"]').focus();
+
+      // Chỉ cho phép nhập số
+      document
+        .querySelector('input[name="code"]')
+        .addEventListener("input", function (e) {
+          this.value = this.value.replace(/[^0-9]/g, "");
+        });
+
+      // Auto submit khi nhập đủ 6 số
+      document
+        .querySelector('input[name="code"]')
+        .addEventListener("input", function (e) {
+          if (this.value.length === 6) {
+            console.log("Auto-submitting form with code:", this.value);
+            setTimeout(() => {
+              this.form.submit();
+            }, 500);
+          }
+        });
+
+      // Manual submit button
+      document.querySelector("form").addEventListener("submit", function (e) {
+        console.log("Form submitted manually");
+        const code = document.querySelector('input[name="code"]').value;
+        const token = document.querySelector('input[name="token"]').value;
+        console.log(
+          "Submitting with code:",
+          code,
+          "token:",
+          token ? token.substring(0, 10) + "..." : "none"
+        );
+      });
+    </script>
+  </body>
+</html>

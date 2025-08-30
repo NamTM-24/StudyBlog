@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/output.css" />
+    <title>Chỉnh sửa bài viết - User</title>
+
+    <script>
+      document.head.insertAdjacentHTML(
+        "afterbegin",
+        '<link rel="stylesheet" type="text/css" href="https://unpkg.com/flowbite-typography@1.0.3/dist/typography.min.css">'
+      );
+    </script>
+
+    <!-- Quill Editor CSS -->
+    <link
+      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#eff6ff",
+                100: "#dbeafe",
+                200: "#bfdbfe",
+                300: "#93c5fd",
+                400: "#60a5fa",
+                500: "#3b82f6",
+                600: "#2563eb",
+                700: "#1d4ed8",
+                800: "#1e40af",
+                900: "#1e3a8a",
+                950: "#172554",
+              },
+            },
+          },
+          fontFamily: {
+            body: [
+              "Inter",
+              "ui-sans-serif",
+              "system-ui",
+              "-apple-system",
+              "system-ui",
+              "Segoe UI",
+              "Roboto",
+              "Helvetica Neue",
+              "Arial",
+              "Noto Sans",
+              "sans-serif",
+              "Apple Color Emoji",
+              "Segoe UI Emoji",
+              "Segoe UI Symbol",
+              "Noto Color Emoji",
+            ],
+            sans: [
+              "Inter",
+              "ui-sans-serif",
+              "system-ui",
+              "-apple-system",
+              "system-ui",
+              "Segoe UI",
+              "Roboto",
+              "Helvetica Neue",
+              "Arial",
+              "Noto Sans",
+              "sans-serif",
+              "Apple Color Emoji",
+              "Segoe UI Emoji",
+              "Segoe UI Symbol",
+              "Noto Color Emoji",
+            ],
+          },
+        },
+      };
+    </script>
+
+    <style>
+      .ql-editor {
+        font-size: 16px;
+        line-height: 1.6;
+        min-height: 400px;
+      }
+
+      .ql-editor h1 {
+        font-size: 2.5rem !important;
+        font-weight: 700 !important;
+        margin: 1.5rem 0 1rem 0 !important;
+        color: #1e293b !important;
+        display: block !important;
+        line-height: 1.2 !important;
+      }
+
+      .upload-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: #e5e7eb;
+        z-index: 9999;
+      }
+
+      .upload-progress-bar {
+        height: 100%;
+        background: #3b82f6;
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+
+      .ql-editor h2 {
+        font-size: 2rem !important;
+        font-weight: 600 !important;
+        margin: 1.25rem 0 0.75rem 0 !important;
+        color: #1e293b !important;
+        display: block !important;
+        line-height: 1.3 !important;
+      }
+
+      .ql-editor h3 {
+        font-size: 1.5rem !important;
+        font-weight: 600 !important;
+        margin: 1rem 0 0.5rem 0 !important;
+        color: #1e293b !important;
+        display: block !important;
+        line-height: 1.4 !important;
+      }
+
+      .ql-editor p {
+        margin: 0.75rem 0 !important;
+        line-height: 1.7 !important;
+        color: #374151 !important;
+      }
+
+      .ql-editor ul,
+      .ql-editor ol {
+        margin: 0.75rem 0 !important;
+        padding-left: 1.5rem !important;
+      }
+
+      .ql-editor li {
+        margin: 0.25rem 0 !important;
+        line-height: 1.6 !important;
+      }
+
+      .ql-editor blockquote {
+        border-left: 4px solid #3b82f6 !important;
+        padding-left: 1rem !important;
+        margin: 1rem 0 !important;
+        font-style: italic !important;
+        color: #6b7280 !important;
+        background: #f9fafb !important;
+        padding: 1rem !important;
+        border-radius: 0.375rem !important;
+      }
+
+      .ql-editor code {
+        background: #f3f4f6 !important;
+        padding: 0.125rem 0.25rem !important;
+        border-radius: 0.25rem !important;
+        font-family: "Courier New", monospace !important;
+        font-size: 0.875rem !important;
+        color: #dc2626 !important;
+      }
+
+      .ql-editor pre {
+        background: #1f2937 !important;
+        color: #f9fafb !important;
+        padding: 1rem !important;
+        border-radius: 0.5rem !important;
+        overflow-x: auto !important;
+        margin: 1rem 0 !important;
+      }
+
+      .ql-editor pre code {
+        background: none !important;
+        color: inherit !important;
+        padding: 0 !important;
+      }
+
+      .ql-editor a {
+        color: #3b82f6 !important;
+        text-decoration: underline !important;
+      }
+
+      .ql-editor img {
+        max-width: 100% !important;
+        height: auto !important;
+        border-radius: 0.5rem !important;
+        margin: 1rem 0 !important;
+      }
+
+      .ql-editor strong {
+        font-weight: 600 !important;
+        color: #111827 !important;
+      }
+
+      .ql-editor em {
+        font-style: italic !important;
+        color: #6b7280 !important;
+      }
+
+      .ql-editor .ql-size-small {
+        font-size: 0.875rem !important;
+      }
+
+      .ql-editor .ql-size-large {
+        font-size: 1.125rem !important;
+      }
+
+      .ql-editor .ql-size-huge {
+        font-size: 1.5rem !important;
+      }
+
+      .ql-editor .ql-color-red {
+        color: #dc2626 !important;
+      }
+
+      .ql-editor .ql-color-orange {
+        color: #ea580c !important;
+      }
+
+      .ql-editor .ql-color-yellow {
+        color: #ca8a04 !important;
+      }
+
+      .ql-editor .ql-color-green {
+        color: #16a34a !important;
+      }
+
+      .ql-editor .ql-color-blue {
+        color: #2563eb !important;
+      }
+
+      .ql-editor .ql-color-purple {
+        color: #7c3aed !important;
+      }
+
+      .ql-editor .ql-bg-red {
+        background-color: #fef2f2 !important;
+      }
+
+      .ql-editor .ql-bg-orange {
+        background-color: #fff7ed !important;
+      }
+
+      .ql-editor .ql-bg-yellow {
+        background-color: #fefce8 !important;
+      }
+
+      .ql-editor .ql-bg-green {
+        background-color: #f0fdf4 !important;
+      }
+
+      .ql-editor .ql-bg-blue {
+        background-color: #eff6ff !important;
+      }
+
+      .ql-editor .ql-bg-purple {
+        background-color: #faf5ff !important;
+      }
+
+      .dark .ql-editor {
+        color: #e5e7eb !important;
+      }
+
+      .dark .ql-editor h1,
+      .dark .ql-editor h2,
+      .dark .ql-editor h3 {
+        color: #f9fafb !important;
+      }
+
+      .dark .ql-editor p {
+        color: #d1d5db !important;
+      }
+
+      .dark .ql-editor strong {
+        color: #f9fafb !important;
+      }
+
+      .dark .ql-editor blockquote {
+        background: #374151 !important;
+        color: #9ca3af !important;
+        border-left-color: #60a5fa !important;
+      }
+
+      .dark .ql-editor code {
+        background: #374151 !important;
+        color: #f87171 !important;
+      }
+
+      .dark .ql-editor pre {
+        background: #111827 !important;
+        color: #f9fafb !important;
+      }
+
+      .dark .ql-editor a {
+        color: #60a5fa !important;
+      }
+
+      .ql-toolbar.ql-snow {
+        border: 1px solid #d1d5db !important;
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+        background: #ffffff !important;
+      }
+
+      .dark .ql-toolbar.ql-snow {
+        border-color: #4b5563 !important;
+        background: #374151 !important;
+      }
+
+      .ql-container.ql-snow {
+        border: 1px solid #d1d5db !important;
+        border-top: none !important;
+        border-radius: 0 0 0.5rem 0.5rem !important;
+        background: #ffffff !important;
+      }
+
+      .dark .ql-container.ql-snow {
+        border-color: #4b5563 !important;
+        background: #374151 !important;
+      }
+
+      .ql-snow .ql-stroke {
+        stroke: #6b7280 !important;
+      }
+
+      .ql-snow .ql-fill {
+        fill: #6b7280 !important;
+      }
+
+      .ql-snow .ql-picker {
+        color: #6b7280 !important;
+      }
+
+      .ql-snow .ql-picker-options {
+        background: #ffffff !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 0.375rem !important;
+      }
+
+      .dark .ql-snow .ql-picker-options {
+        background: #374151 !important;
+        border-color: #4b5563 !important;
+      }
+
+      .ql-snow .ql-picker-item {
+        color: #374151 !important;
+      }
+
+      .dark .ql-snow .ql-picker-item {
+        color: #d1d5db !important;
+      }
+
+      .ql-snow .ql-picker-item.ql-selected {
+        color: #3b82f6 !important;
+      }
+
+      .ql-snow .ql-picker-label:hover,
+      .ql-snow .ql-picker-label.ql-active {
+        color: #3b82f6 !important;
+      }
+
+      .ql-snow .ql-picker-label:hover .ql-stroke,
+      .ql-snow .ql-picker-label.ql-active .ql-stroke {
+        stroke: #3b82f6 !important;
+      }
+
+      .ql-snow .ql-picker-label:hover .ql-fill,
+      .ql-snow .ql-picker-label.ql-active .ql-fill {
+        fill: #3b82f6 !important;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 dark:bg-gray-900">
+    <!-- Upload Progress Bar -->
+    <div class="upload-progress" id="uploadProgress" style="display: none">
+      <div class="upload-progress-bar" id="uploadProgressBar"></div>
+    </div>
+
+    <!-- Header -->
+    <header
+      class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700"
+    >
+      <nav class="px-4 lg:px-6 py-2.5">
+        <div
+          class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl"
+        >
+          <a href="/" class="flex items-center">
+            <img
+              src="/images/weaverseio_logo.jpg"
+              class="mr-3 h-6 sm:h-9"
+              alt="StudyBlog Logo"
+            />
+            <span
+              class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"
+              >StudyBlog</span
+            >
+          </a>
+
+          <div class="flex items-center lg:order-2">
+            <% if (user) { %>
+            <div class="relative">
+              <button
+                type="button"
+                id="user-menu-button"
+                class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+              >
+                <% if (user.avatar) { %>
+                <img
+                  class="w-8 h-8 rounded-full"
+                  src="<%= user.avatar %>"
+                  alt="User Avatar"
+                />
+                <% } else { %>
+                <div
+                  class="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white font-semibold"
+                >
+                  <%= user.name.charAt(0).toUpperCase() %>
+                </div>
+                <% } %>
+              </button>
+
+              <div
+                class="hidden absolute right-0 mt-2 bg-white dark:bg-gray-700 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600 z-50"
+                id="user-dropdown"
+                style="min-width: 200px"
+              >
+                <div class="px-4 py-3">
+                  <span class="block text-sm text-gray-900 dark:text-white"
+                    ><%= user.name %></span
+                  >
+                  <span
+                    class="block text-sm text-gray-500 truncate dark:text-gray-400"
+                    ><%= user.email %></span
+                  >
+                </div>
+                <ul class="py-2" aria-labelledby="user-menu-button">
+                  <li>
+                    <a
+                      href="/posts/create/new"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    >
+                      <svg
+                        class="w-4 h-4 inline mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 4v16m8-8H4"
+                        ></path>
+                      </svg>
+                      Viết bài mới
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/posts/user/manage"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    >
+                      <svg
+                        class="w-4 h-4 inline mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        ></path>
+                      </svg>
+                      Quản lý bài viết
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/logout"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    >
+                      <svg
+                        class="w-4 h-4 inline mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        ></path>
+                      </svg>
+                      Đăng xuất
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <% } %>
+          </div>
+
+          <div
+            class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+            id="navbar-user"
+          >
+            <ul
+              class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
+            >
+              <li>
+                <a
+                  href="/home"
+                  class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                  >Trang chủ</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/posts"
+                  class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                  >Bài viết</a
+                >
+              </li>
+              <li>
+                <a
+                  href="/posts/create/new"
+                  class="block py-2 px-3 text-blue-600 rounded-sm hover:bg-blue-50 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-blue-500 md:dark:hover:text-blue-400 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                  >Viết bài</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="py-8">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            Chỉnh sửa bài viết
+          </h1>
+          <p class="text-gray-600 dark:text-gray-400">
+            Cập nhật nội dung bài viết của bạn
+          </p>
+        </div>
+
+        <!-- Error Message -->
+        <% if (error) { %>
+        <div
+          class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl"
+        >
+          <strong>Lỗi!</strong> <%= error %>
+        </div>
+        <% } %>
+
+        <!-- Form -->
+        <form
+          action="/posts/user/edit/<%= post.id %>"
+          method="POST"
+          class="bg-white dark:bg-gray-800 shadow rounded-lg p-6"
+        >
+          <!-- Title -->
+          <div class="mb-6">
+            <label
+              for="title"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Tiêu đề bài viết *
+            </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value="<%= post.title %>"
+              required
+              minlength="3"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              placeholder="Nhập tiêu đề bài viết (tối thiểu 3 ký tự)"
+            />
+          </div>
+
+          <!-- Content -->
+          <div class="mb-6">
+            <label
+              for="content"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
+              Nội dung bài viết *
+            </label>
+            <div id="editor" style="height: 400px"><%- post.lead %></div>
+            <input type="hidden" name="content" id="content" />
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex justify-end space-x-4">
+            <a
+              href="/posts/user/manage"
+              class="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              Hủy
+            </a>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            >
+              <svg
+                class="w-4 h-4 inline mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                ></path>
+              </svg>
+              Cập nhật bài viết
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <!-- Quill Editor JS -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
+    <script>
+      // User dropdown functionality
+      (function () {
+        const userMenuButton = document.getElementById("user-menu-button");
+        const userDropdown = document.getElementById("user-dropdown");
+
+        // Toggle dropdown
+        if (userMenuButton && userDropdown) {
+          userMenuButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            userDropdown.classList.toggle("hidden");
+          });
+
+          // Close dropdown when clicking outside
+          window.addEventListener("click", (e) => {
+            if (
+              !userMenuButton.contains(e.target) &&
+              !userDropdown.contains(e.target)
+            ) {
+              userDropdown.classList.add("hidden");
+            }
+          });
+        }
+      })();
+
+      // Quill Editor Configuration
+      const quill = new Quill("#editor", {
+        theme: "snow",
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, 3, false] }],
+            ["bold", "italic", "underline", "strike"],
+            [{ color: [] }, { background: [] }],
+            [{ list: "ordered" }, { list: "bullet" }],
+            [{ align: [] }],
+            ["link", "image"],
+            ["clean"],
+          ],
+        },
+        placeholder: "Viết nội dung bài viết của bạn...",
+      });
+
+      // Set initial content
+      quill.root.innerHTML = `<%- post.lead %>`;
+
+      // Form submission
+      document.querySelector("form").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        // Get content from Quill editor
+        const content = quill.root.innerHTML;
+        document.getElementById("content").value = content;
+
+        // Validate content
+        if (content.trim().length < 10) {
+          alert("Nội dung bài viết phải có ít nhất 10 ký tự.");
+          return;
+        }
+
+        // Submit form
+        this.submit();
+      });
+
+      // Image upload handler
+      const toolbar = quill.getModule("toolbar");
+      toolbar.addHandler("image", function () {
+        const input = document.createElement("input");
+        input.setAttribute("type", "file");
+        input.setAttribute("accept", "image/*");
+        input.click();
+
+        input.onchange = async function () {
+          const file = input.files[0];
+          if (file) {
+            const formData = new FormData();
+            formData.append("image", file);
+
+            // Show progress bar
+            const progressBar = document.getElementById("uploadProgress");
+            const progressBarInner =
+              document.getElementById("uploadProgressBar");
+            progressBar.style.display = "block";
+
+            try {
+              const response = await fetch("/posts/upload-image", {
+                method: "POST",
+                body: formData,
+              });
+
+              if (response.ok) {
+                const data = await response.json();
+                const range = quill.getSelection();
+                quill.insertEmbed(range.index, "image", data.url);
+              } else {
+                alert("Không thể tải ảnh lên. Vui lòng thử lại.");
+              }
+            } catch (error) {
+              console.error("Lỗi upload ảnh:", error);
+              alert("Có lỗi xảy ra khi tải ảnh lên.");
+            } finally {
+              // Hide progress bar
+              progressBar.style.display = "none";
+              progressBarInner.style.width = "0%";
+            }
+          }
+        };
+      });
+    </script>
+  </body>
+</html>
